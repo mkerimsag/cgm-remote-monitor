@@ -8,7 +8,7 @@
 # 5. Connect your own, forked cgm-remote-monitor repo
 # 6. Fill in required environment variables
 # 7. Click "Apply" and wait for the deploy to complete.
-# mongodb+srv://mkerimsag:m00451400@cluster0.ll9egev.mongodb.net/?retryWrites=true&w=majority
+# mongodb+srv://mkerimsag:m00451400@cluster0.ll9egev.mongodb.net/mycgm?retryWrites=true&w=majority
 # nitghscoutk1 n00451400451400
 #
 
