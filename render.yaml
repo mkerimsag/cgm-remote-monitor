@@ -1,79 +1,79 @@
-# NightScout CGM Uzaktan İzlemeyi Kolayca Dağıtın (https://github.com/nightscout/cgm-remote-monitor)
-# Render'a tıklayın (https://render.com)
+# Easily deploy NightScout CGM Remote Monitor (https://github.com/nightscout/cgm-remote-monitor) 
+# to Render (https://render.com)
 # ------------------------------
-# 1. https://github.com/nightscout/cgm-remote-monitor adresini kendi GitHub hesabınıza kopyalayın.
-# 2. Forked deponuzun köküne bir render.yaml dosyası ekleyin, aşağıdaki içerikleri kopyalayıp yapıştırın
-# 3. Yeni dosyayı kaydedin (ve GitHub'a gönderin)
-# 4. Render'da "Yeni +" > "Mavi Kopya"ya tıklayın
-# 5. Kendi çatallı cgm-remote-monitor deponuzu bağlayın
-# 6. Gerekli ortam değişkenlerini doldurun
-# 7. "Uygula"ya tıklayın ve dağıtımın tamamlanmasını bekleyin.
+# 1. Fork https://github.com/nightscout/cgm-remote-monitor to your own GitHub account.
+# 2. Add a render.yaml file to the root of your forked repo, copy/paste the contents below
+# 3. Commit the new file (and push to GitHub)
+# 4. In Render, click "New +" > "Blueprint"
+# 5. Connect your own, forked cgm-remote-monitor repo
+# 6. Fill in required environment variables
+# 7. Click "Apply" and wait for the deploy to complete.
 
-Hizmetler:
-  - tür: web
-    isim: nightscout
-    env: düğüm
-    bölge: oregon # isteğe bağlı (varsayılan oregon'dur. Diğer bölgeler: ohio, frankfurt, singapur)
-    plan: ücretsiz # isteğe bağlı (varsayılan olarak ücretsizdir - bu ÜCRETSİZ bir PLAN olabilir... https://render.com/pricing)
-    buildCommand: npm kurulum
-    startKomutu: npm start
-    sağlıkKontrolYolu: /
+services:
+  - type: web
+    name: nightscout
+    env: node
+    region: oregon # optional (defaults to oregon. Other regions: ohio, frankfurt, singapore)
+    plan: free # optional (defaults to free - this a FREE PLAN, maybe... https://render.com/pricing)
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /
     envVars:
-      - anahtar: INSECURE_USE_HTTP # TLS, uygulamaya ulaşmadan sonlandırılır, bu nedenle yalnızca HTTP'ye yanıt vermesi gerekir.
-        değer: doğru
-      - anahtar: HOSTNAME # uygulamayı herhangi bir dahili IP'ye bağla
-        değer: "0.0.0.0"
-      - anahtar: MONGODB_URI # MongoDB kümenize bağlanmak için MongoDB Bağlantı Dizisi. MongoDB Atlas'tan bu yoksa lütfen devam etmeden önce http://nightscout.github.io/nightscout/new_user/ adresindeki kurulum talimatlarını tekrar okuyun
-        senkronizasyon: false # Blueprint oluşturulduğunda istenecektir
-      - tuşu: ALARM_HIGH # Yeni tarayıcı görünümleri için varsayılan ayar, Yüksek alarmı için (BG, BG_TARGET_TOP'u geçtiğinde tetiklenir). ('açık' veya 'kapalı')
-        değer: "açık"
-      - tuşu: ALARM_LOW # Yeni tarayıcı görünümleri için varsayılan ayar, Düşük alarmı için (BG, BG_TARGET_BOTTOM'ı geçtiğinde tetiklenir). ('açık' veya 'kapalı')
-        değer: "açık"
-      - anahtar: ALARM_TIMEAGO_URGENT # Yeni tarayıcı görünümleri için varsayılan ayar, ALARM_TIMEAGO_URGENT_MINS'de ayarlanan dakika sayısı içinde CGM verisi alınmadığında acil bir alarm için. ('açık' veya 'kapalı')
-        değer: "açık"
-      - anahtar: ALARM_TIMEAGO_URGENT_MINS # Son CGM okumasından bu yana geçen dakika sayısını ALARM_TIMEAGO_URGENT alarmını tetiklemek için yeni tarayıcı görünümleri için varsayılan ayar.
-        değer: "30"
-      - tuşu: ALARM_TIMEAGO_WARN # Yeni tarayıcı görünümleri için varsayılan ayar, ALARM_TIMEAGO_WARN_MINS'de ayarlanan dakika sayısı içinde CGM verisi alınmadığında bir uyarı alarmı verilmesi. ('açık' veya 'kapalı')
-        değer: "açık"
-      - anahtar: ALARM_TIMEAGO_WARN_MINS # Son CGM okumasından bu yana geçen dakika sayısını ALARM_TIMEAGO_WARN alarmını tetiklemek için yeni tarayıcı görünümleri için varsayılan ayar.
-        değer: "15"
-      - anahtar: ALARM_TYPES # 'basit' ve/veya 'tahmin'. Basit alarmlar, BG aşağıda ayarlanan çeşitli eşikleri geçtiğinde tetiklenir. Tahmin alarmları, BG'nin eğilimine göre nereye gittiğini tahmin eden bir formül kullanır. Tahmin türünü kullanırken, aşağıda ayarlanan BG eşiklerini geçtiğinizde uyarı *almazsınız*.
-        değer: "basit"
-      - tuşu: ALARM_URGENT_HIGH # Yeni tarayıcı görünümleri için varsayılan ayar, Acil Yüksek alarmı için (BG, BG_HIGH'ı geçtiğinde tetiklenir). ('açık' veya 'kapalı')
-        değer: "açık"
-      - tuşu: ALARM_URGENT_LOW # Yeni tarayıcı görünümleri için varsayılan ayar, Acil Düşük alarmı için (BG, BG_LOW'u geçtiğinde tetiklenir). ('açık' veya 'kapalı')
-        değer: "açık"
-      - anahtar: API_SECRET # En az 12 karakter uzunluğunda olması gereken bir parola. Bazı durumlarda sorunlara neden olabilecek 'özel' karakterlerden kaçının.
-        senkronizasyon: false # Blueprint oluşturulduğunda istenecektir
-      - anahtar: BG_HIGH # Acil Yüksek BG eşiği, ALARM_URGENT_HIGH alarmını tetikler. DISPLAY_UNITS değişkeninde ayarlandığı gibi mg/dL veya mmol/L olarak ayarlanır.
-        değer: "260"
-      - tuşu: BG_LOW # Acil Düşük BG eşiği, ALARM_URGENT_LOW alarmını tetikler. DISPLAY_UNITS değişkeninde ayarlandığı gibi mg/dL veya mmol/L olarak ayarlanır.
-        değer: "55"
-      - anahtar: BG_TARGET_BOTTOM # Düşük BG eşiği, ALARM_LOW alarmını tetikler. DISPLAY_UNITS değişkeninde ayarlandığı gibi mg/dL veya mmol/L olarak ayarlanır.
-        değer: "80"
-      - anahtar: BG_TARGET_TOP # Yüksek BG eşiği, ALARM_HIGH alarmını tetikler. DISPLAY_UNITS değişkeninde ayarlandığı gibi mg/dL veya mmol/L olarak ayarlanır.
-        değer: "180"
-      - anahtar: BOLUS_RENDER_OVER # 'x U ve Üzeri' seçeneği seçildiğinde bolus değerlerinin grafikte işleneceği U değeri.
-        değer: "1"
-      - key: BRIDGE_PASSWORD # Dexcom Share servisinden CGM verilerini almak için Dexcom hesabınızın şifresi. Ayrıca ENABLE satırınıza 'bridge' eklediğinizden emin olun.
-        değer: "şifre"
-      - anahtar: BRIDGE_SERVER # Dexcom Share servisinden köprüleme yapıyorsanız ve ABD *dışında* bir yerdeyseniz, bunu AB olarak değiştirin. ('ABD' veya 'AB')
-        değer: "AB"
-      - anahtar: BRIDGE_USER_NAME # Dexcom Share servisinden CGM verilerini almak için Dexcom hesabınızın kullanıcı adı. Ayrıca ENABLE satırınıza 'bridge' eklediğinizden emin olun.
-        değer: "kullanıcı adı"
-      - anahtar: CUSTOM_TITLE # Nightscout sitesi için görüntü adı. Ana görünümün sol üst kısmında görünür. Genellikle CGM kullanıcısının adına ayarlanır.
-        değer: ""
-      - anahtar: DISPLAY_UNITS # Site için tercih edilen BG birimleri: 'mg/dl' veya 'mmol/L' (veya sadece 'mmol').
-        senkronizasyon: false # Blueprint oluşturulduğunda istenecektir
-      - key: ENABLE # Siteniz için etkinleştirilecek eklentiler. Boşlukla ayrılmış, küçük harfli bir liste olmalıdır. Dexcom Share servisinden veri alıyorsanız buraya 'bridge' kelimesini ekleyin. MiniMed CareLink servisinden köprüleme yapıyorsanız 'mmconnect' kelimesini ekleyin.
-        değer: "careportal bazal dbsize rawbg iob maker cob bwp kafes iage sage boluscalc pushover treatmentnotify loop pompa profili yiyecek openaps bage alexa geçersiz kılma konuşma cors"
-      - anahtar: NIGHT_MODE # Yeni tarayıcı görünümleri için varsayılan ayar, Gece Modu'nun etkinleştirilip etkinleştirilmeyeceği. ('açık' veya 'kapalı')
-        değer: "kapalı"
-      - anahtar: SHOW_PLUGINS # Bu eklentilerin varsayılan olarak işaretli (etkin) olup olmayacağına dair varsayılan ayar, yalnızca etkin değil. Eklentileri buraya ENABLE satırında olduğu gibi ekleyin; boşlukla ayrılmış ve küçük harfli.
-        değer: "careportal dbize"
-      - anahtar: SHOW_RAWBG # Yeni tarayıcı görünümleri için, ham CGM verilerinin görüntülenmesi için varsayılan ayar (varsa). ('her zaman', 'asla' veya 'gürültü')
-        değer: "asla"
-      - anahtar: TEMA # CGM grafiğinin renk teması için yeni tarayıcı görünümleri için varsayılan ayar. ('varsayılan', 'renkler' veya 'renk körü dostu')
-        değer: "renkler"
-      - anahtar: TIME_FORMAT # Yeni tarayıcı görünümleri için varsayılan ayar, zaman modu için. ('12' veya '24')
-        değer: "12"
+      - key: INSECURE_USE_HTTP # TLS is terminated before reaching the app, so only needs to respond to HTTP.
+        value: true
+      - key: HOSTNAME # bind app to any internal IP
+        value: "0.0.0.0"
+      - key: MONGODB_URI # The MongoDB Connection String to connect to your MongoDB cluster. If you don't have this from MongoDB Atlas, please re-read installation instructions at http://nightscout.github.io/nightscout/new_user/ before continuing
+        sync: false # will be requested when Blueprint is created
+      - key: ALARM_HIGH # Default setting for new browser views, for the High alarm (triggered when BG crosses BG_TARGET_TOP). ('on' or 'off')
+        value: "on"
+      - key: ALARM_LOW # Default setting for new browser views, for the Low alarm (triggered when BG crosses BG_TARGET_BOTTOM). ('on' or 'off')
+        value: "on"
+      - key: ALARM_TIMEAGO_URGENT # Default setting for new browser views, for an urgent alarm when CGM data hasn't been received in the number of minutes set in ALARM_TIMEAGO_URGENT_MINS. ('on' or 'off')
+        value: "on"
+      - key: ALARM_TIMEAGO_URGENT_MINS # Default setting for new browser views, for the number of minutes since the last CGM reading to trigger an ALARM_TIMEAGO_URGENT alarm.
+        value: "30"
+      - key: ALARM_TIMEAGO_WARN # Default setting for new browser views, for a warning alarm when CGM data hasn't been received in the number of minutes set in ALARM_TIMEAGO_WARN_MINS. ('on' or 'off')
+        value: "on"
+      - key: ALARM_TIMEAGO_WARN_MINS # Default setting for new browser views, for the number of minutes since the last CGM reading to trigger an ALARM_TIMEAGO_WARN alarm.
+        value: "15"
+      - key: ALARM_TYPES # 'simple' and/or 'predict'. Simple alarms trigger when BG crosses the various thresholds set below. Predict alarms use a formula that forecasts where the BG is going based on its trend. You will *not* get warnings when crossing the BG thresholds set below when using the predict type.
+        value: "simple"
+      - key: ALARM_URGENT_HIGH # Default setting for new browser views, for the Urgent High alarm (triggered when BG crosses BG_HIGH). ('on' or 'off')
+        value: "on"
+      - key: ALARM_URGENT_LOW # Default setting for new browser views, for the Urgent Low alarm (triggered when BG crosses BG_LOW). ('on' or 'off')
+        value: "on"
+      - key: API_SECRET # A passphrase that must be at least 12 characters long. Avoid 'special' characters, which can cause problems in some cases.
+        sync: false # will be requested when Blueprint is created
+      - key: BG_HIGH # Urgent High BG threshold, triggers the ALARM_URGENT_HIGH alarm. Set in mg/dL or mmol/L, as set in DISPLAY_UNITS variable.
+        value: "260"
+      - key: BG_LOW # Urgent Low BG threshold, triggers the ALARM_URGENT_LOW alarm. Set in mg/dL or mmol/L, as set in DISPLAY_UNITS variable.
+        value: "55"
+      - key: BG_TARGET_BOTTOM # Low BG threshold, triggers the ALARM_LOW alarm. Set in mg/dL or mmol/L, as set in DISPLAY_UNITS variable.
+        value: "80"
+      - key: BG_TARGET_TOP # High BG threshold, triggers the ALARM_HIGH alarm. Set in mg/dL or mmol/L, as set in DISPLAY_UNITS variable.
+        value: "180"
+      - key: BOLUS_RENDER_OVER # U value over which the bolus values are rendered on the chart if the 'x U and Over' option is selected.
+        value: "1"
+      - key: BRIDGE_PASSWORD # Your Dexcom account password, to receive CGM data from the Dexcom Share service. Also make sure to include 'bridge' in your ENABLE line.
+        value: "password"
+      - key: BRIDGE_SERVER # If you are bridging from the Dexcom Share service, and are anywhere *outside* the US, change this to EU. ('US' or 'EU')
+        value: "EU"
+      - key: BRIDGE_USER_NAME # Your Dexcom account username, to receive CGM data from the Dexcom Share service. Also make sure to include 'bridge' in your ENABLE line.
+        value: "username"
+      - key: CUSTOM_TITLE # The display name for the Nightscout site. Appears in the upper left of the main view. Often set to the name of the CGM wearer.
+        value: ""
+      - key: DISPLAY_UNITS # Preferred BG units for the site: 'mg/dl' or 'mmol/L' (or just 'mmol').
+        sync: false # will be requested when Blueprint is created
+      - key: ENABLE # Plugins to enable for your site. Must be a space-delimited, lower-case list. Include the word 'bridge' here if you are receiving data from the Dexcom Share service. Include 'mmconnect' if you are bridging from the MiniMed CareLink service.
+        value: "careportal basal dbsize rawbg iob maker cob bwp cage iage sage boluscalc pushover treatmentnotify loop pump profile food openaps bage alexa override speech cors"
+      - key: NIGHT_MODE # Default setting for new browser views, for whether Night Mode should be enabled. ('on' or 'off')
+        value: "off"
+      - key: SHOW_PLUGINS # Default setting for whether or not these plugins are checked (active) by default, not merely enabled. Include plugins here as in the ENABLE line; space-separated and lower-case.
+        value: "careportal dbize"
+      - key: SHOW_RAWBG # Default setting for new browser views, for the display of raw CGM data (if available). ('always', 'never', or 'noise')
+        value: "never"
+      - key: THEME # Default setting for new browser views, for the color theme of the CGM graph. ('default', 'colors', or 'colorblindfriendly')
+        value: "colors"
+      - key: TIME_FORMAT # Default setting for new browser views, for the time mode. ('12' or '24')
+        value: "12"
